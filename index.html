@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>皺梅梅子味噌電子獎狀</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background: linear-gradient(120deg, #fff8f0, #ffe9d6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fffdf7;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            text-align: center;
+            width: 450px;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: "🍶🌿";
+            font-size: 60px;
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            opacity: 0.1;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff7f50;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 12px;
+            width: 75%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #ff7f50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #ff6347;
+        }
+        #award {
+            margin-top: 25px;
+            font-size: 18px;
+            color: #4a4a4a;
+        }
+        a {
+            color: #ff7f50;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">皺梅 – 梅子味噌</div>
+        <p>請輸入瓶身序號以獲得您的電子獎狀</p>
+        <input type="text" id="serialNumber" placeholder="輸入序號">
+        <br>
+        <button onclick="checkSerial()">確認</button>
+        <div id="award"></div>
+        <button id="downloadBtn" style="display:none;" onclick="downloadPDF()">下載獎狀 PDF</button>
+    </div>
+
+    <script>
+        const validSerials = ["0001","0002","0003","0004","0005"];
+        let currentSerial = "";
+
+        function checkSerial() {
+            const input = document.getElementById('serialNumber').value.trim();
+            const awardDiv = document.getElementById('award');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            if(validSerials.includes(input)) {
+                currentSerial = input;
+                awardDiv.innerHTML = `
+                    <h3>恭喜你！</h3>
+                    <p>你是第 ${input} 位拯救地球的梅森者 🌿</p>
+                    <p>感謝你支持永續在地農業與循環經濟！</p>
+                    <p>了解更多品牌故事請 <a href="https://www.twsoybean.com.tw/" target="_blank">點此連結</a></p>
+                `;
+                downloadBtn.style.display = "inline-block";
+            } else {
+                awardDiv.innerHTML = "<p>序號無效，請重新輸入 ❌</p>";
+                downloadBtn.style.display = "none";
+            }
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFont("Noto Serif TC", "bold");
+            doc.setFontSize(22);
+            doc.text("皺梅 – 梅子味噌電子獎狀", 105, 30, {align: "center"});
+            
+            doc.setFontSize(18);
+            doc.text(`恭喜你！`, 105, 50, {align: "center"});
+            doc.text(`你是第 ${currentSerial} 位拯救地球的梅森者 🌿`, 105, 65, {align: "center"});
+            doc.setFontSize(14);
+            doc.text("感謝你支持永續在地農業與循環經濟！", 105, 80, {align: "center"});
+            doc.text("了解更多品牌故事請造訪 www.twsoybean.com.tw", 105, 95, {align: "center"});
+
+            doc.save(`皺梅_梅子味噌_電子獎狀_${currentSerial}.pdf`);
+        }
+    </script>
+</body>
+</html>
